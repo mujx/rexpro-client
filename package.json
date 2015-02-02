@@ -1,0 +1,26 @@
+{
+  "name": "rexpro-client",
+  "version": "0.1.0",
+  "description": "RexPro interface for Node.js",
+  "keywords": [
+    "rexpro",
+    "rexster",
+    "rexster binary"
+  ],
+  "main": "./lib/rexpro_client.js",
+  "author": "mujx_x",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mujx/rexpro-client"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "binary-parser": "^1.1.4",
+    "bl": "^0.9.4",
+    "concentrate": "^0.2.3",
+    "msgpack": "^0.2.4",
+    "readable-stream": "^1.0.33",
+    "underscore": "^1.7.0",
+    "uuid": "^2.0.1"
+  }
+}
