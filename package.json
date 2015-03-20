@@ -22,5 +22,12 @@
     "readable-stream": "^1.0.33",
     "underscore": "^1.7.0",
     "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-jasmine": "^2.0.0",
+    "gulp-jshint": "^1.9.4",
+    "jasmine-reporters": "^2.0.5",
+    "jshint-stylish": "^1.0.1"
   }
 }
