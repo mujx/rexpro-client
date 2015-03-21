@@ -18,7 +18,7 @@ var settings = {
 
 
 gulp.task('lint', function() {
-  return gulp.src(settings.js.root)
+  return gulp.src([settings.js.root, settings.test.root])
              .pipe(jshint())
              .pipe(jshint.reporter('jshint-stylish'));
 });
