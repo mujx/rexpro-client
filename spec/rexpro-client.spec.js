@@ -47,21 +47,17 @@ describe('Ad-hoc queries', function() {
     });
   });
 
-  xit("should return an exception if the host isn't a Rexster server", function(done) {
+  it("should return an exception if the host isn't a Rexster server", function(done) {
     var client = RexProClient({
       host: 'localhost',
       graph: this.graph
     });
 
-    //TODO Handle ECONNREFUSED
-
     client.execute(this.query, function(err, data) {
-      expect(err).toMatch(/^Error: GraphDoesntExist/);
+      expect(err).toMatch(/^Error: ECONNREFUSED/);
       expect(data).toBeUndefined();
       done();
     });
-
-
   });
 
   it("should return an exception if the query is not valid", function(done) {
@@ -80,12 +76,9 @@ describe('Ad-hoc queries', function() {
 
     client.execute(query, function(err, data) {
       expect(err).toMatch(/^Error: ScriptFailure/);
-      //TODO Replace data with undefined.
-      expect(err).toMatch(/^Error: ScriptFailure/);
+      expect(data).toBeUndefined();
       done();
     });
-
-
   });
 
 });
