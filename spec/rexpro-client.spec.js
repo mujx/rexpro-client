@@ -54,7 +54,7 @@ describe('Ad-hoc queries', function() {
     });
 
     client.execute(this.query, function(err, data) {
-      expect(err).toMatch(/^Error: ECONNREFUSED/);
+      expect(err).toMatch(/^Error: connect ECONNREFUSED/);
       expect(data).toBeUndefined();
       done();
     });
