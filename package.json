@@ -19,6 +19,7 @@
     "bl": "^0.9.4",
     "concentrate": "^0.2.3",
     "msgpack": "^0.2.4",
+    "q": "^1.2.0",
     "readable-stream": "^1.0.33",
     "underscore": "^1.7.0",
     "uuid": "^2.0.1"
