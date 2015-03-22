@@ -190,7 +190,7 @@ describe('In session queries', function() {
       done();
     })
     .catch(function(err) {
-      expect(err).toBeUndefined()
+      expect(err).toBeUndefined();
       done();
     });
   });
@@ -270,5 +270,102 @@ describe('In session queries', function() {
     })
     .done();
 
+  });
+
+  it('should be able to switch between sessions', function(done) {
+
+    var _this = this;
+
+    _this.session1 = '';
+    _this.session2 = '';
+
+    _this.q1 = {
+      script: 'g.V.has("name", q1).name',
+      bindings: {
+        q1: 'npm'
+      }
+    };
+    _this.q2 = {
+      script: 'g.V.has("name", q2).name',
+      bindings: {
+        q2: 'jasmine'
+      }
+    };
+
+    this.client.openSession()
+
+    // Open a session and store the UUID.
+    .then(function(uuid) {
+      expect(uuid).toMatch(_this.UUID);
+      _this.session1 = uuid;
+      _this.q1.session = _this.session1;
+      return _this.client.openSession();
+    })
+
+    // Open another session and store the new UUID.
+    .then(function(uuid) {
+      expect(uuid).toMatch(_this.UUID);
+      _this.session2 = uuid;
+      _this.q2.session = _this.session2;
+      return _this.client.execute(_this.q1);
+    })
+
+    // Make a query on the first session with some bindings
+    .then(function(data) {
+      expect(data[0]).toBe('npm');
+      _this.q1.script = 'g.V.has("name", q1).name';
+      _this.q1.bindings = {};
+      return _this.client.execute(_this.q1);
+    })
+
+    // Make a query on the first using the bindngs.
+    .then(function(data) {
+      expect(data[0]).toBe('npm');
+      return _this.client.execute(_this.q2);
+    })
+
+    // Make a query on the second session with some other bindings.
+    .then(function(data) {
+      expect(data[0]).toBe('jasmine');
+      _this.q1.script = 'g.V.has("name", q2).name';
+      _this.q1.bindings = {};
+      return _this.client.execute(_this.q2);
+    })
+
+    // Make a query on the second session using the bindings.
+    .then(function(data) {
+      expect(data[0]).toBe('jasmine');
+      return _this.client.execute(_this.q2);
+    })
+
+    // Make a query again on the first session using the bindings
+    // from the first session.
+    .then(function(data) {
+      expect(data[0]).toBe('jasmine');
+      return _this.client.closeSession({
+        session: _this.session1
+      });
+    })
+
+    // Close the first session.
+    .then(function(response) {
+      expect(response).toBeTruthy();
+      return _this.client.closeSession({
+        session: _this.session2
+      });
+    })
+
+    // Close the second session.
+    .then(function(response) {
+      expect(response).toBeTruthy();
+      done();
+    })
+
+    // Catch all the errors.
+    .catch(function(err) {
+      expect(err).toBeUndefined();
+      done();
+    })
+    .done();
   });
 });
