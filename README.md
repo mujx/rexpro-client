@@ -73,7 +73,7 @@ client.openSession()
 
 For a more detailed explanation about the parameters see the Rexster's [wiki].
 
-`openSession(options)`  Opens a session and returns the UUID for the session. 
+`openSession(options)`  Opens a session and returns the UUID for the session.
 - `graph` - The name of the graph to open a session on. Optional.
 - `graphObjName` - The variable name of the graph object. Optional.
 - `username` - Used for authentication. Optional.
