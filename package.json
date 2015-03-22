@@ -1,6 +1,6 @@
 {
   "name": "rexpro-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "RexPro interface for Node.js",
   "keywords": [
     "rexpro",
@@ -19,8 +19,16 @@
     "bl": "^0.9.4",
     "concentrate": "^0.2.3",
     "msgpack": "^0.2.4",
+    "q": "^1.2.0",
     "readable-stream": "^1.0.33",
     "underscore": "^1.7.0",
     "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-jasmine": "^2.0.0",
+    "gulp-jshint": "^1.9.4",
+    "jasmine-reporters": "^2.0.5",
+    "jshint-stylish": "^1.0.1"
   }
 }
