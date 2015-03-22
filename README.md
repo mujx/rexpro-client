@@ -18,7 +18,7 @@ npm install rexpro-client
 ``` javascript
 var RexProClient = require("rexpro-client");
 
-var client = RexProClient({
+var client = new RexProClient({
     host: "localhost",      // default
     port: 8184,             // default
     graph: "tinkerpop",
