@@ -21,9 +21,8 @@ var RexProClient = require("rexpro-client");
 var client = new RexProClient({
     host: "localhost",      // default
     port: 8184,             // default
-    graph: "tinkerpop",
-    serializer: "msgpack"   // Defining a serializer is optional,
-});                         // 'json' is the default.
+    graph: "tinkerpop"      // default
+});                         
 
 var query = {
     script: "g.V.has('name', name).out()",
