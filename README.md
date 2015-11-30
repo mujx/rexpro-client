@@ -4,7 +4,7 @@ A simple Rexster client for node.js implementing the binary protocol RexPro.
 
 For more information about the RexPro protocol visit Rexster's [wiki].
 
-The client is implemented using [q], so every method returns a promise.
+The API is promise based.
 
 ### Installation
 
@@ -103,4 +103,3 @@ License
 MIT
 
 [wiki]:https://github.com/tinkerpop/rexster/wiki/RexPro
-[q]:https://github.com/kriskowal/q
