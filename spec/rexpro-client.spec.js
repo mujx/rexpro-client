@@ -8,13 +8,13 @@ var RexProClient = require('../lib/rexpro_client.js');
 describe('Ad-hoc queries', function() {
 
   beforeEach(function() {
-    this.graph = process.env.GRAPH_NAME;
-    this.remoteHost = process.env.GRAPH_HOST;
+    this.graph = 'graph';
+    this.remoteHost = 'localhost';
 
     this.query = {
       script: 'g.V.has("name", name)',
       bindings: {
-        name: 'npm'
+        name: 'saturn'
       }
     };
 
@@ -29,12 +29,11 @@ describe('Ad-hoc queries', function() {
 
     client.execute(this.query)
     .then(function (data) {
-      expect(data[0]._properties.name).toBe('npm');
+      expect(data[0]._properties.name).toBe('saturn');
       done();
     })
     .catch(function(err) {
-      expect(err).toBeUndefined();
-      done();
+      done(err);
     })
     .done();
   });
@@ -49,12 +48,11 @@ describe('Ad-hoc queries', function() {
 
     client.execute(this.query)
     .then(function(data) {
-      expect(data[0]._properties.name).toBe('npm');
+      expect(data[0]._properties.name).toBe('saturn');
       done();
     })
     .catch(function(err) {
-      expect(err).toBeUndefined();
-      done();
+      done(err);
     })
     .done();
   });
@@ -79,24 +77,6 @@ describe('Ad-hoc queries', function() {
     .done();
   });
 
-  it('should return an exception if the host isnt a Rexster server', function(done) {
-    var client = new RexProClient({
-      host: 'localhost',
-      graph: this.graph
-    });
-
-    client.execute(this.query)
-    .then(function(data) {
-      expect(data).toBeUndefined();
-      done();
-    })
-    .catch(function(err) {
-      expect(err).toMatch(/^Error: connect ECONNREFUSED/);
-      done();
-    })
-    .done();
-  });
-
   it('should return an exception if the query is not valid', function(done) {
 
     var client = new RexProClient({
@@ -107,7 +87,7 @@ describe('Ad-hoc queries', function() {
     var query = {
       script: 'g.N.has("name", name).out()',
       bindings: {
-        name: 'npm'
+        name: 'saturn'
       }
     };
 
@@ -127,8 +107,8 @@ describe('Ad-hoc queries', function() {
 describe('In session queries', function() {
 
   beforeEach(function() {
-    this.graph = process.env.GRAPH_NAME;
-    this.remoteHost = process.env.GRAPH_HOST;
+    this.graph = 'graph';
+    this.remoteHost = 'localhost';
 
     this.UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
@@ -140,13 +120,13 @@ describe('In session queries', function() {
     this.query = {
       script: 'g.V.has("name", name)',
       bindings: {
-        name: 'npm'
+        name: 'saturn'
       }
     };
 
   });
 
-  it('should be able to open a session', function(done) {
+  it('should be able to open a session [json]', function(done) {
 
     var _this = this;
 
@@ -156,13 +136,27 @@ describe('In session queries', function() {
       done();
     })
     .catch(function(err) {
-      expect(err).toBeUndefined();
-      done();
+      done(err);
     })
     .done();
   });
 
-  it('should be able to execute queries with authentication' , function(done) {
+  it('should be able to open a session [msgpack]', function(done) {
+
+    var _this = this;
+
+    this.client.openSession({serializer: 'msgpack'})
+    .then(function(uuid) {
+      expect(uuid).toMatch(_this.UUID);
+      done();
+    })
+    .catch(function(err) {
+      done(err);
+    })
+    .done();
+  });
+
+  it('should be able to execute queries with authentication [json]' , function(done) {
 
     // If the authentication isn't turned on, it falls back to an
     // unauthenticated session.
@@ -182,7 +176,7 @@ describe('In session queries', function() {
       return _this.client.execute(_this.query);
     })
     .then(function(data) {
-      expect(data[0]).toBe('npm');
+      expect(data[0]).toBe('saturn');
       return _this.client.closeSession(_this.query);
     })
     .then(function(response) {
@@ -190,8 +184,40 @@ describe('In session queries', function() {
       done();
     })
     .catch(function(err) {
-      expect(err).toBeUndefined();
+      done(err);
+    });
+  });
+
+  it('should be able to execute queries with authentication [msgpack]' , function(done) {
+
+    // If the authentication isn't turned on, it falls back to an
+    // unauthenticated session.
+    var sessionInfo = {
+      username: 'rexster',
+      password: 'rexster',
+      serializer: 'msgpack'
+    };
+
+    var _this = this;
+
+    this.client.openSession(sessionInfo)
+    .then(function(uuid) {
+      expect(uuid).toMatch(_this.UUID);
+      _this.query.session = uuid;
+      _this.query.console = true;
+      _this.query.script = 'g.V.has("name", name).name';
+      return _this.client.execute(_this.query);
+    })
+    .then(function(data) {
+      expect(data[0]).toBe('saturn');
+      return _this.client.closeSession(_this.query);
+    })
+    .then(function(response) {
+      expect(response).toBeTruthy();
       done();
+    })
+    .catch(function(err) {
+      done(err);
     });
   });
 
@@ -211,7 +237,7 @@ describe('In session queries', function() {
       return _this.client.execute(_this.query);
     })
     .then(function(data) {
-      expect(data[0]._properties.name).toBe('npm');
+      expect(data[0]._properties.name).toBe('saturn');
       var q2 = {
         session: _this.currentUUID
       };
@@ -238,8 +264,8 @@ describe('In session queries', function() {
     var q1 = {
       script: 'g.V.has("name", name)',
       bindings: {
-        name: 'npm',
-        another: 'bower'
+        name: 'saturn',
+        another: 'hydra'
       }
     };
 
@@ -256,12 +282,12 @@ describe('In session queries', function() {
       return _this.client.execute(q1);
     })
     .then(function(data) {
-      expect(data[0]._properties.name).toBe('npm');
+      expect(data[0]._properties.name).toBe('saturn');
       q2.session = _this.currentUUID;
       return _this.client.execute(q2);
     })
     .then(function(data) {
-      expect(data[0]._properties.name).toBe('bower');
+      expect(data[0]._properties.name).toBe('hydra');
       done();
     })
     .catch(function(err) {
@@ -282,13 +308,13 @@ describe('In session queries', function() {
     _this.q1 = {
       script: 'g.V.has("name", q1).name',
       bindings: {
-        q1: 'npm'
+        q1: 'saturn'
       }
     };
     _this.q2 = {
       script: 'g.V.has("name", q2).name',
       bindings: {
-        q2: 'jasmine'
+        q2: 'hercules'
       }
     };
 
@@ -312,7 +338,7 @@ describe('In session queries', function() {
 
     // Make a query on the first session with some bindings
     .then(function(data) {
-      expect(data[0]).toBe('npm');
+      expect(data[0]).toBe('saturn');
       _this.q1.script = 'g.V.has("name", q1).name';
       _this.q1.bindings = {};
       return _this.client.execute(_this.q1);
@@ -320,13 +346,13 @@ describe('In session queries', function() {
 
     // Make a query on the first using the bindngs.
     .then(function(data) {
-      expect(data[0]).toBe('npm');
+      expect(data[0]).toBe('saturn');
       return _this.client.execute(_this.q2);
     })
 
     // Make a query on the second session with some other bindings.
     .then(function(data) {
-      expect(data[0]).toBe('jasmine');
+      expect(data[0]).toBe('hercules');
       _this.q1.script = 'g.V.has("name", q2).name';
       _this.q1.bindings = {};
       return _this.client.execute(_this.q2);
@@ -334,14 +360,14 @@ describe('In session queries', function() {
 
     // Make a query on the second session using the bindings.
     .then(function(data) {
-      expect(data[0]).toBe('jasmine');
+      expect(data[0]).toBe('hercules');
       return _this.client.execute(_this.q2);
     })
 
     // Make a query again on the first session using the bindings
     // from the first session.
     .then(function(data) {
-      expect(data[0]).toBe('jasmine');
+      expect(data[0]).toBe('hercules');
       return _this.client.closeSession({
         session: _this.session1
       });
@@ -363,8 +389,7 @@ describe('In session queries', function() {
 
     // Catch all the errors.
     .catch(function(err) {
-      expect(err).toBeUndefined();
-      done();
+      done(err);
     })
     .done();
   });
